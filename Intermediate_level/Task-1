@@ -1,0 +1,98 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.*;
+class Transaction {
+    String type;
+    double amount;
+    double balance;
+    public Transaction(String type, double amount, double balance) {
+        this.type = type;
+        this.amount = amount;
+        this.balance = balance;
+    }
+}
+public class BankAccount {
+    private double balance;
+    private List<Transaction> transactionHistory;
+    private int accountNumber;
+    private int pin;
+    public BankAccount(int accountNumber, int pin) {
+        this.balance = 0;
+        this.transactionHistory = new ArrayList<>();
+        this.accountNumber = accountNumber;
+        this.pin = pin;
+    }
+    public void deposit(double amount) {
+        balance += amount;
+        transactionHistory.add(new Transaction("Deposit", amount, balance));
+    }
+    public void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            transactionHistory.add(new Transaction("Withdrawal", amount, balance));
+        } else {
+            System.out.println("Insufficient balance");
+        }
+    }
+    public void displayTransactionHistory() {
+        for (Transaction transaction : transactionHistory) {
+            System.out.println(transaction.type + " | Amount: " + transaction.amount + " | Balance: " + transaction.balance);
+        }
+    }
+    public void checkBalance() {
+        System.out.println("Current Balance: " + balance);
+    }
+    public boolean authenticate(int pin) {
+        return this.pin == pin;
+    }
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount(123456, 1234);
+        Scanner s= new Scanner(System.in);
+        while (true) {
+            System.out.print("Enter your account number: ");
+            int userAccountNumber = s.nextInt();
+            if (userAccountNumber == account.accountNumber) {
+                System.out.print("Enter your PIN: ");
+                int userPin = s.nextInt();
+                if (account.authenticate(userPin)) {
+                    while (true) {
+                        System.out.println("1. Deposit");
+                        System.out.println("2. Withdraw");
+                        System.out.println("3. Transaction History");
+                        System.out.println("4. Check Balance");
+                        System.out.println("5. Exit");
+                        System.out.print("Choose an option: ");
+                        int option = s.nextInt();
+                        switch (option) {
+                            case 1:
+                                System.out.print("Enter amount to deposit: ");
+                                double depositAmount = s.nextDouble();
+                                account.deposit(depositAmount);
+                                break;
+                            case 2:
+                                System.out.print("Enter amount to withdraw: ");
+                                double withdrawAmount = s.nextDouble();
+                                account.withdraw(withdrawAmount);
+                                break;
+                            case 3:
+                                account.displayTransactionHistory();
+                                break;
+                            case 4:
+                                account.checkBalance();
+                                break;
+                            case 5:
+                                System.out.println("Thanks for using our service.");
+                                System.exit(0);
+                                break;
+                            default:
+                                System.out.println("Invalid option");
+                        }
+                    }
+                } else {
+                    System.out.println("Invalid PIN");
+                }
+            } else {
+                System.out.println("Invalid account number");
+            }
+        }
+}
