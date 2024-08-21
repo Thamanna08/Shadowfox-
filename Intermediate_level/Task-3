@@ -1,0 +1,105 @@
+import java.util.*;
+class Book {
+    String title;
+    String author;
+    boolean isAvailable;
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.isAvailable = true;
+    }
+}
+public class Library {
+    private Map<String, Book> catalog;
+    private Scanner s;
+
+    public Library() {
+        this.catalog = new HashMap<>();
+        this.s = new Scanner(System.in);
+    }
+
+    public void run() {
+        while (true) {
+            System.out.println("1. Add book");
+            System.out.println("2. Borrow book");
+            System.out.println("3. Return book");
+            System.out.println("4. List books");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
+            int option = Integer.parseInt(s.nextLine());
+            switch (option) {
+                case 1:
+                    addBook();
+                    break;
+                case 2:
+                    borrowBook();
+                    break;
+                case 3:
+                    returnBook();
+                    break;
+                case 4:
+                    listBooks();
+                    break;
+                case 5:
+                    System.out.println("Thanks for using our Library");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid option");
+            }
+        }
+    }
+
+    private void addBook() {
+        System.out.print("Enter book title: ");
+        String title = s.nextLine();
+        System.out.print("Enter book author: ");
+        String author = s.nextLine();
+        catalog.put(title, new Book(title, author));
+        System.out.println("Book added successfully");
+    }
+
+    private void borrowBook() {
+        System.out.print("Enter book title: ");
+        String title = s.nextLine();
+        if (catalog.containsKey(title)) {
+            Book book = catalog.get(title);
+            if (book.isAvailable) {
+                book.isAvailable = false;
+                System.out.println("Book borrowed successfully");
+            } else {
+                System.out.println("Book is not available");
+            }
+        } else {
+            System.out.println("Book not found");
+        }
+    }
+
+    private void returnBook() {
+        System.out.print("Enter book title: ");
+        String title = s.nextLine();
+        if (catalog.containsKey(title)) {
+            Book book = catalog.get(title);
+            if (!book.isAvailable) {
+                book.isAvailable = true;
+                System.out.println("Book returned successfully");
+            } else {
+                System.out.println("Book is already available");
+            }
+        } else {
+            System.out.println("Book not found");
+        }
+    }
+
+    private void listBooks() {
+        for (Book book : catalog.values()) {
+            System.out.println(book.title + " by " + book.author + (book.isAvailable ? " (available)" : " (not available)"));
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Welecome to our Library Management System");
+        Library library = new Library();
+        library.run();
+    }
+}
